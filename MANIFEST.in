@@ -1,0 +1,14 @@
+include *.md
+include *.rst
+include *.txt
+include LICENSE
+include .coveragerc
+include tox.ini
+include artisanci/packages/virtualbox/LICENSE
+include artisanci/packages/README.md
+exclude build_docs.py
+exclude .mention-bot
+recursive-include docs *
+recursive-exclude docs/build *
+recursive-include docs Makefile
+recursive-include tests *.py
