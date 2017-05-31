@@ -7,6 +7,9 @@ rfc6555
 .. image:: https://img.shields.io/appveyor/ci/SethMichaelLarson/rfc6555/master.svg?style=flat-square
     :target: https://ci.appveyor.com/project/SethMichaelLarson/rfc6555
 
+.. image:: https://img.shields.io/codecov/c/github/SethMichaelLarson/rfc6555/master.svg?style=flat-square
+    :target: https://codecov.io/gh/SethMichaelLarson/rfc6555
+
 .. image:: https://img.shields.io/pypi/v/rfc6555.svg?style=flat-square
     :target: https://pypi.python.org/pypi/rfc6555
 
