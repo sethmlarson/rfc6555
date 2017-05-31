@@ -60,7 +60,8 @@ _DEFAULT_CACHE_DURATION = 60 * 10  # 10 minutes according to the RFC.
 RFC6555_ENABLED = _HAS_IPV6
 
 __all__ = ['RFC6555_ENABLED',
-           'create_connection']
+           'create_connection',
+           'cache']
 
 __version__ = '1.0.0'
 __author__ = 'Seth Michael Larson'
@@ -69,7 +70,32 @@ __license__ = 'Apache-2.0'
 
 
 class _RFC6555CacheManager(object):
-    pass  # TODO
+    def __init__(self):
+        self.validity_duration = _DEFAULT_CACHE_DURATION
+        self.enabled = True
+        self.entries = {}
+
+    def add_entry(self, address, family):
+        if self.enabled:
+            current_time = perf_counter()
+
+            # Don't over-write old entries to reset their expiry.
+            if address not in self.entries or self.entries[address][1] > current_time:
+                self.entries[address] = (family, current_time + self.validity_duration)
+
+    def get_entry(self, address):
+        if not self.enabled or address not in self.entries:
+            return None
+
+        family, expiry = self.entries[address]
+        if perf_counter() > expiry:
+            del self.entries[address]
+            return None
+
+        return family
+
+
+cache = _RFC6555CacheManager()
 
 
 class _RFC6555ConnectionManager(object):
@@ -87,15 +113,34 @@ class _RFC6555ConnectionManager(object):
         self._start_time = perf_counter()
 
         host, port = self.address
-        res = socket.getaddrinfo(host, port, socket.AF_UNSPEC, socket.SOCK_STREAM)
+        addr_info = socket.getaddrinfo(host, port, socket.AF_UNSPEC, socket.SOCK_STREAM)
+        ret = self._connect_with_cached_family(addr_info)
+
+        # If it's a list, then these are the remaining values to try.
+        if isinstance(ret, list):
+            addr_info = ret
+        else:
+            cache.add_entry(self.address, ret.family)
+            return ret
 
         # If we don't get any results back then just skip to the end.
-        if not res:
+        if not addr_info:
             raise socket.error('getaddrinfo returns an empty list')
 
+        sock = self._attempt_connect_with_addr_info(addr_info)
+
+        if sock:
+            cache.add_entry(self.address, sock.family)
+            return sock
+        elif self._error:
+            raise self._error
+        else:
+            raise socket.timeout()
+
+    def _attempt_connect_with_addr_info(self, addr_info):
         sock = None
         try:
-            for family, socktype, proto, _, sockaddr in res:
+            for family, socktype, proto, _, sockaddr in addr_info:
                 self._create_socket(family, socktype, proto, sockaddr)
                 sock = self._wait_for_connection(False)
                 if sock:
@@ -104,13 +149,27 @@ class _RFC6555ConnectionManager(object):
                 sock = self._wait_for_connection(True)
         finally:
             self._remove_all_sockets()
+        return sock
 
-        if sock:
+    def _connect_with_cached_family(self, addr_info):
+        family = cache.get_entry(self.address)
+        if family is None:
+            return addr_info
+
+        is_family = []
+        not_family = []
+
+        for value in addr_info:
+            if value[0] == family:
+                is_family.append(value)
+            else:
+                not_family.append(value)
+
+        sock = self._attempt_connect_with_addr_info(is_family)
+        if sock is not None:
             return sock
-        elif self._error:
-            raise self._error
-        else:
-            raise socket.timeout()
+
+        return not_family
 
     def _create_socket(self, family, socktype, proto, sockaddr):
         sock = None
@@ -230,7 +289,7 @@ def create_connection(address, timeout=socket._GLOBAL_DEFAULT_TIMEOUT, source_ad
         # here to make sure the same code is used across all Python versions as
         # the source_address parameter was added to socket.create_connection() in 3.2
         # This segment of code is licensed under the Python Software Foundation License
-        # See: https://github.com/python/cpython/blob/3.6/LICENSE
+        # See LICENSE: https://github.com/python/cpython/blob/3.6/LICENSE
         host, port = address
         err = None
         for res in socket.getaddrinfo(host, port, 0, socket.SOCK_STREAM):

@@ -36,5 +36,10 @@ install:
 script:
   - tox
 
+after_success:
+  - source .tox/${TOXENV}/bin/activate
+  - pip install codecov
+  - codecov --env TRAVIS_OS_NAME,TOXENV
+
 notifications:
   email: false

@@ -39,6 +39,11 @@ class _BasicCreateConnectionTests(object):
             with pytest.raises(socket.error):
                 rfc6555.create_connection(('::1', 0))
 
+    @requires_network
+    def test_create_connection_cached_value(self):
+        sock = rfc6555.create_connection(('www.google.com', 80))
+        sock2 = rfc6555.create_connection(('www.google.com', 80))
+
 
 class TestCreateConnectionTestRFC6555Default(_BasicCreateConnectionTests):
     pass
