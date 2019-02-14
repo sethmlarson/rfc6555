@@ -95,3 +95,8 @@ See `full license text in LICENSE file <https://github.com/SethMichaelLarson/rfc
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
+
+Alternatives
+------------
+
+For asyncio support check out https://pypi.org/project/async-stagger/
