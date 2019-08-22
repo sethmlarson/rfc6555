@@ -24,7 +24,9 @@ if __name__ == '__main__':
           author_email='sethmichaellarson@protonmail.com',
           maintainer='Seth Michael Larson',
           maintainer_email='sethmichaellarson@protonmail.com',
-          install_requires=['selectors2'],
+          install_requires=[
+              'selectors2;python_version<"3.4"'
+          ],
           py_modules=['rfc6555'],
           zip_safe=False,
           classifiers=['Intended Audience :: Developers',
