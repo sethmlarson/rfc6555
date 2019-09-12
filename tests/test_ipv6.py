@@ -1,6 +1,10 @@
 import socket
-import mock
 import rfc6555
+
+try:
+    from unittest import mock
+except (ImportError, AttributeError):
+    import mock
 
 
 def test_ipv6_available():
