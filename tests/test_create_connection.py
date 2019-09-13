@@ -1,4 +1,8 @@
-import mock
+try:
+    from unittest import mock
+except (ImportError, AttributeError):
+    import mock
+
 import pytest
 import socket
 import rfc6555

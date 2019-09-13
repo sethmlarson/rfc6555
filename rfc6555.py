@@ -16,7 +16,10 @@
 
 import errno
 import socket
-from selectors2 import DefaultSelector, EVENT_WRITE
+try:
+    from selectors  import DefaultSelector, EVENT_WRITE
+except (ImportError, AttributeError):
+    from selectors2 import DefaultSelector, EVENT_WRITE
 
 # time.perf_counter() is defined in Python 3.3
 try:
