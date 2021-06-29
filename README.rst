@@ -99,4 +99,4 @@ See `full license text in LICENSE file <https://github.com/SethMichaelLarson/rfc
 Alternatives
 ------------
 
-For asyncio support check out https://pypi.org/project/async-stagger/
+For asyncio support check out https://docs.python.org/3/library/asyncio-eventloop.html?highlight=happy_eyeballs_delay#asyncio.loop.create_connection
