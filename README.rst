@@ -1,22 +1,16 @@
-rfc6555
-=======
+Happy Eyeballs in Python (RFC 6555)
+===================================
 
-.. image:: https://img.shields.io/travis/SethMichaelLarson/rfc6555/master.svg?style=flat-square
-    :target: https://travis-ci.org/SethMichaelLarson/rfc6555
+.. image:: https://github.com/sethmlarson/rfc6555/actions/workflows/ci.yml/badge.svg
+    :target: https://github.com/sethmlarson/rfc6555/actions/workflows/ci.yml
 
-.. image:: https://img.shields.io/appveyor/ci/SethMichaelLarson/rfc6555/master.svg?style=flat-square
-    :target: https://ci.appveyor.com/project/SethMichaelLarson/rfc6555
-
-.. image:: https://img.shields.io/codecov/c/github/SethMichaelLarson/rfc6555/master.svg?style=flat-square
-    :target: https://codecov.io/gh/SethMichaelLarson/rfc6555
+.. image:: https://codecov.io/gh/sethmlarson/rfc6555/branch/master/graph/badge.svg?token=Xn7oQWErjc
+    :target: https://codecov.io/gh/sethmlarson/rfc6555    
 
 .. image:: https://img.shields.io/pypi/v/rfc6555.svg?style=flat-square
     :target: https://pypi.python.org/pypi/rfc6555
 
-.. image:: https://img.shields.io/badge/say-thanks-ff69b4.svg?style=flat-square
-    :target: https://saythanks.io/to/SethMichaelLarson
-
-Python implementation of the Happy Eyeballs Algorithm described in `RFC 6555 <https://tools.ietf.org/html/rfc6555>`_.
+Synchronous Python implementation of the Happy Eyeballs Algorithm described in `RFC 6555 <https://tools.ietf.org/html/rfc6555>`_.
 Provided with a single file and dead-simple API to allow easy vendoring
 and integration into other projects.
 
@@ -31,12 +25,12 @@ stack client to have a worse user experience.  This document
 specifies requirements for algorithms that reduce this user-visible
 delay and provides an algorithm.
 
-~ `Abstract from RFC 6555 <https://tools.ietf.org/html/rfc6555>`_
-
 Installation
 ------------
 
-``$ python -m pip install rfc6555``
+ .. code-block:: bash
+
+    $ python -m pip install rfc6555
 
 Usage
 -----
@@ -69,7 +63,7 @@ is thread-safe and assign an instance to ``rfc6555.cache``.
 Support
 -------
 
-This module supports Python 2.6 or newer and supports all major platforms.
+This module supports Python 2.7 or newer and supports all major platforms.
 Additionally if you have ``selectors2>=2.0.0`` installed this module will
 also support Jython in addition to CPython.
 
@@ -78,25 +72,4 @@ License
 
 The ``rfc6555`` package is released under the ``Apache-2.0`` license.
 
-See `full license text in LICENSE file <https://github.com/SethMichaelLarson/rfc6555/blob/master/LICENSE>`_ for more information.
-
- .. code-block::
-
-                Copyright 2017 Seth Michael Larson
-  
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-  
-            http://www.apache.org/licenses/LICENSE-2.0
-  
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
-
-Alternatives
-------------
-
-For asyncio support check out https://docs.python.org/3/library/asyncio-eventloop.html?highlight=happy_eyeballs_delay#asyncio.loop.create_connection
+See `full license text in LICENSE file <https://github.com/sethmlarson/rfc6555/blob/master/LICENSE>`_ for more information.
