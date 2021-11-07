@@ -1,6 +1,4 @@
-""" Python implementation of the Happy Eyeballs Algorithm described in RFC 6555. """
-
-# Copyright 2017 Seth Michael Larson
+# Copyright 2021 Seth Michael Larson
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,12 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""Python implementation of the Happy Eyeballs Algorithm described in RFC 6555"""
+
 import errno
 import socket
+
 try:
-    from selectors  import DefaultSelector, EVENT_WRITE
+    from selectors import EVENT_WRITE, DefaultSelector
 except (ImportError, AttributeError):
-    from selectors2 import DefaultSelector, EVENT_WRITE
+    from selectors2 import EVENT_WRITE, DefaultSelector
 
 # time.perf_counter() is defined in Python 3.3
 try:
@@ -35,11 +36,11 @@ _SOCKET_ERRORS = (socket.error, OSError, IOError)
 
 # Detects whether an IPv6 socket can be allocated.
 def _detect_ipv6():
-    if getattr(socket, 'has_ipv6', False) and hasattr(socket, 'AF_INET6'):
+    if getattr(socket, "has_ipv6", False) and hasattr(socket, "AF_INET6"):
         _sock = None
         try:
             _sock = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
-            _sock.bind(('::1', 0))
+            _sock.bind(("::1", 0))
             return True
         except _SOCKET_ERRORS:
             if _sock:
@@ -51,10 +52,8 @@ _HAS_IPV6 = _detect_ipv6()
 
 # These are error numbers for asynchronous operations which can
 # be safely ignored by RFC 6555 as being non-errors.
-_ASYNC_ERRNOS = set([errno.EINPROGRESS,
-                     errno.EAGAIN,
-                     errno.EWOULDBLOCK])
-if hasattr(errno, 'WSAWOULDBLOCK'):
+_ASYNC_ERRNOS = set([errno.EINPROGRESS, errno.EAGAIN, errno.EWOULDBLOCK])
+if hasattr(errno, "WSAWOULDBLOCK"):
     _ASYNC_ERRNOS.add(errno.WSAWOULDBLOCK)
 
 _DEFAULT_CACHE_DURATION = 60 * 10  # 10 minutes according to the RFC.
@@ -62,14 +61,12 @@ _DEFAULT_CACHE_DURATION = 60 * 10  # 10 minutes according to the RFC.
 # This value that can be used to disable RFC 6555 globally.
 RFC6555_ENABLED = _HAS_IPV6
 
-__all__ = ['RFC6555_ENABLED',
-           'create_connection',
-           'cache']
+__all__ = ["RFC6555_ENABLED", "create_connection", "cache"]
 
-__version__ = '1.0.0'
-__author__ = 'Seth Michael Larson'
-__email__ = 'sethmichaellarson@protonmail.com'
-__license__ = 'Apache-2.0'
+__version__ = "0.1.0"
+__author__ = "Seth Michael Larson"
+__email__ = "sethmichaellarson@gmail.com"
+__license__ = "Apache-2.0"
 
 
 class _RFC6555CacheManager(object):
@@ -102,7 +99,9 @@ cache = _RFC6555CacheManager()
 
 
 class _RFC6555ConnectionManager(object):
-    def __init__(self, address, timeout=socket._GLOBAL_DEFAULT_TIMEOUT, source_address=None):
+    def __init__(
+        self, address, timeout=socket._GLOBAL_DEFAULT_TIMEOUT, source_address=None
+    ):
         self.address = address
         self.timeout = timeout
         self.source_address = source_address
@@ -128,7 +127,7 @@ class _RFC6555ConnectionManager(object):
 
         # If we don't get any results back then just skip to the end.
         if not addr_info:
-            raise socket.error('getaddrinfo returns an empty list')
+            raise socket.error("getaddrinfo returns an empty list")
 
         sock = self._attempt_connect_with_addr_info(addr_info)
 
@@ -283,7 +282,9 @@ class _RFC6555ConnectionManager(object):
         self._sockets = []
 
 
-def create_connection(address, timeout=socket._GLOBAL_DEFAULT_TIMEOUT, source_address=None):
+def create_connection(
+    address, timeout=socket._GLOBAL_DEFAULT_TIMEOUT, source_address=None
+):
     if RFC6555_ENABLED and _HAS_IPV6:
         manager = _RFC6555ConnectionManager(address, timeout, source_address)
         return manager.create_connection()
@@ -296,7 +297,7 @@ def create_connection(address, timeout=socket._GLOBAL_DEFAULT_TIMEOUT, source_ad
         host, port = address
         err = None
         for res in socket.getaddrinfo(host, port, 0, socket.SOCK_STREAM):
-            af, socktype, proto, canonname, sa = res
+            af, socktype, proto, _, sa = res
             sock = None
             try:
                 sock = socket.socket(af, socktype, proto)
