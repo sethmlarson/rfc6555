@@ -16,6 +16,7 @@
 
 import errno
 import socket
+import os
 
 try:
     from selectors import EVENT_WRITE, DefaultSelector
@@ -267,8 +268,7 @@ class _RFC6555ConnectionManager(object):
     def _is_acceptable_errno(self, errno):
         if errno == 0 or errno in _ASYNC_ERRNOS:
             return True
-        self._error = socket.error()
-        self._error.errno = errno
+        self._error = OSError(errno, os.strerror(errno))
         return False
 
     def _is_socket_errored(self, sock):
