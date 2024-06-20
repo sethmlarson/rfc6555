@@ -1,14 +1,9 @@
 Happy Eyeballs in Python (RFC 6555)
 ===================================
 
-.. image:: https://github.com/sethmlarson/rfc6555/actions/workflows/ci.yml/badge.svg
-    :target: https://github.com/sethmlarson/rfc6555/actions/workflows/ci.yml
-
-.. image:: https://codecov.io/gh/sethmlarson/rfc6555/branch/master/graph/badge.svg?token=Xn7oQWErjc
-    :target: https://codecov.io/gh/sethmlarson/rfc6555    
-
-.. image:: https://img.shields.io/pypi/v/rfc6555.svg?style=flat-square
-    :target: https://pypi.python.org/pypi/rfc6555
+.. image:: http://unmaintained.tech/badge.svg
+  :target: http://unmaintained.tech
+  :alt: No Maintenance Intended
 
 Synchronous Python implementation of the Happy Eyeballs Algorithm described in `RFC 6555 <https://tools.ietf.org/html/rfc6555>`_.
 Provided with a single file and dead-simple API to allow easy vendoring
